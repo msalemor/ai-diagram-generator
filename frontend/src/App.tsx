@@ -12,12 +12,14 @@ Goals:
 - Validate the generated code to make sure that it will render correctly.
 Rules:
 - Use one color in an elegant way.
-- For the color styles, use classes.
+- For the color styles, use classes and add them and the end of the rest of the elements.
 - No epilogue or prologue.
 - When appropriate, add labels between components.
-Output
-- Output the mermaid diagram code only without the markdown text block.`
+Output:
+- Output the Mermaid diagram code only without the markdown text block.`
 }
+
+const Title = 'Mermaid GenAI Diagram Generator'
 
 const Settings = {
   endpoint: '',
@@ -59,6 +61,9 @@ function App() {
   const [system, setSystem] = useLocalStorage('system', Defaults.system);
   const [prompt, setPrompt] = useLocalStorage('prompt', '');
   const [processing, setProcessing] = useState(false);
+
+  // Set the document title
+  document.title = Title
 
   const processCompletion = async () => {
     if (processing) return;
@@ -129,16 +134,16 @@ function App() {
   return (
     <>
       <header className='flex h-[35px] items-center bg-slate-900 text-white px-1'>
-        <h1 className='text-xl font-bold'>AI Diagram builder</h1>
+        <h1 className='text-xl font-bold'>{Title}</h1>
       </header>
       <section className='flex h-[30px] items-center bg-slate-800 px-1 text-white space-x-1'>
         <label className=''>Endpoint</label>
-        <input type='password' id='endpoint' className='bg-white text-black w-60'
+        <input type='password' id='endpoint' className='bg-white text-black w-60 outline-none'
           value={settings.endpoint}
           onChange={(e) => setSettings({ ...settings, endpoint: e.target.value })}
         />
         <label>API Key</label>
-        <input type='password' id='apikey' className='bg-white text-black w-40'
+        <input type='password' id='apikey' className='bg-white text-black w-40 outline-none'
           value={settings.apiKey}
           onChange={(e) => setSettings({ ...settings, apiKey: e.target.value })}
         />
