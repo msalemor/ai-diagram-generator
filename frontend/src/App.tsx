@@ -5,11 +5,6 @@ import { completion, useLocalStorage } from './services';
 import { Mermaid2 } from './components/Mermaid2';
 
 
-interface ISettings {
-  endpoint: string
-  apiKey: string
-}
-
 const Defaults = {
   system: `You are a Mermaid diagram generator for system design architecture.
 Goals:
@@ -61,8 +56,8 @@ function App() {
   const [code, setCode] = useState('');
   const [finalCode, setFinalCode] = useState('graph LR');
   const [error, setError] = useState('');
-  const [system, setSystem] = useLocalStorage('system', 'You are a helpful assistant that generates mermaid diagram code based on user prompts. Always respond with only the mermaid code, no explanations or other text.');
-  const [prompt, setPrompt] = useLocalStorage('prompt', 'A simple diagram with 4 nodes');
+  const [system, setSystem] = useLocalStorage('system', Defaults.system);
+  const [prompt, setPrompt] = useLocalStorage('prompt', '');
   const [processing, setProcessing] = useState(false);
 
   const processCompletion = async () => {
