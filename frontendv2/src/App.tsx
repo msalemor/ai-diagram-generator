@@ -17,7 +17,7 @@ Output:
 
 const Demos = {
   simple: `Create a graph diagram of a user making an HTTP request to an Azure App Service over Azure Front Door.`,
-  mid: `Create a graph diagram of a user making an HTTP request to an Azure App Service over Azure Front Door. The App Service calls an Azure SQL Database over a private endpoint. The user should be a blue circle. The private endpoint should be in its own sub-diagram in a VNET. The Azure SQL Database should not be in the sub-diagram. Arrows should be bi-directional.`,
+  intermediate: `Create a graph diagram of a user making an HTTP request to an Azure App Service over Azure Front Door. The App Service calls an Azure SQL Database over a private endpoint. The user should be a blue circle. The private endpoint should be in its own sub-diagram in a VNET. The Azure SQL Database should not be in the sub-diagram. Arrows should be bi-directional.`,
   complex: `Generate a highly detailed Azure architecture diagram using Mermaid syntax. The diagram should include:
 
 - Azure Kubernetes Service (AKS) with multiple node pools (e.g., Linux and Windows)
@@ -133,11 +133,12 @@ function App() {
             <textarea className='px-1 h-full resize-none outline-none border border-gray-300 w-[98%]'
               value={inputs.prompt} onChange={(e) => setInputs({ ...inputs, prompt: e.target.value })}
             />
-            <section className="flex">
-              <span>Demos: <a href="#" className='text-blue-800'
-                onClick={() => setInputs({ ...inputs, prompt: Demos.simple })}>Simple</a> | <a href="#" className='text-blue-800'
-                  onClick={() => setInputs({ ...inputs, prompt: Demos.mid })}>Intermediate</a> | <a href="#" className='text-blue-800'
-                    onClick={() => setInputs({ ...inputs, prompt: Demos.complex })}>Complex</a></span>
+            <section className="flex text-sm space-x-1">
+              <span className='font-semibold uppercase'>Demos:</span>
+              <a href="#" className='text-blue-800'
+                onClick={() => setInputs({ ...inputs, prompt: Demos.simple })}>Simple</a> <span>|</span> <a href="#" className='text-blue-800'
+                  onClick={() => setInputs({ ...inputs, prompt: Demos.intermediate })}>Intermediate</a> <span>|</span> <a href="#" className='text-blue-800'
+                    onClick={() => setInputs({ ...inputs, prompt: Demos.complex })}>Complex</a>
             </section>
             <section className="flex space-x-2 mt-2">
               <button className='bg-blue-500 text-white px-2 ml-1 disabled:bg-blue-300 hover:bg-blue-400' disabled={processing} onClick={process}>Generate</button>
