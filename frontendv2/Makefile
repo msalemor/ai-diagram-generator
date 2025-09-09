@@ -5,7 +5,7 @@ default:
 ui-build:
 	bun run build
 
-VERSION=0.1.7
+VERSION=0.1.8
 NAME=am8850/aimermaidgen:$(VERSION)
 docker-build: ui-build
 	docker build -t $(NAME) .

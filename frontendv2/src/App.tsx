@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { mermaidToSvg, useLocalStorage } from './services'
+import { MdOutlineZoomOutMap } from 'react-icons/md'
+//import ModalWindow from './components/ModalWindow'
 
 const Defaults = {
   system: `You are a Mermaid diagram generator for system design architecture.
@@ -60,6 +62,9 @@ function App() {
   const [processing, setProcessing] = useState(false)
   const [settings, setSettings] = useLocalStorage('settings', Settings)
   const [inputs, setInputs] = useLocalStorage('inputs', InputAreas)
+  const [showModal, setShowModal] = useState(false)
+  const [target, setTarget] = useState('')
+  const [targetTitle, setTargetTitle] = useState('')
 
   document.title = TITLE
 
@@ -110,26 +115,33 @@ function App() {
       </header>
       <section className="flex items-center bg-gray-800 text-white h-[25px] space-x-2 text-sm px-2">
         <label htmlFor="" className='uppercase font-semibold'>Endpoint:</label>
-        <input type="password" className='bg-white text-black px-1 outline-none w-80' name="" id=""
+        <input type="password" className='bg-white text-black px-1 outline-none w-80'
           value={settings.endpoint} onChange={(e) => setSettings({ ...settings, endpoint: e.target.value })}
         />
         <label htmlFor="" className='uppercase font-semibold'>API Key:</label>
-        <input type="password" className='bg-white text-black px-1 outline-none' name="" id=""
+        <input type="password" className='bg-white text-black px-1 outline-none'
           value={settings.apikey} onChange={(e) => setSettings({ ...settings, apikey: e.target.value })}
         />
         <label htmlFor="" className='uppercase font-semibold'>Retries:</label>
         <input type="text" className='bg-white text-black px-1 outline-none w-12'
-          value={settings.retries} name="" id="" onChange={(e) => setSettings({ ...settings, retries: e.target.value })} />
+          value={settings.retries} onChange={(e) => setSettings({ ...settings, retries: e.target.value })} />
         <button onClick={() => { setSettings(Settings) }} className='bg-red-700 hover:border text-white px-2'>Clear</button>
+        <button onClick={() => setShowModal(true)} className='bg-blue-700 hover:border text-white px-2 ml-auto'>Help</button>
       </section>
-      <section className="flex flex-col h-[calc(100vh-25px-38px-25px)]">
+      <section id="mainarea" className="flex flex-col h-[calc(100vh-25px-38px-25px)]">
         <div className="flex h-[40%] bg-gray-50 p-2">
           <div className="w-1/3 flex flex-col">
-            <label className='uppercase font-semibold'>System</label>
+            <section className="flex items-center space-x-2">
+              <label className='uppercase font-semibold'>System</label>
+              <MdOutlineZoomOutMap title='Zoom Out' onClick={() => { setShowModal(true); setTargetTitle('System Prompt'); setTarget('system') }} />
+            </section>
             <textarea className='px-1 h-full resize-none outline-none border border-gray-300 w-[98%]'
               value={inputs.system} onChange={(e) => setInputs({ ...inputs, system: e.target.value })}
             />
-            <label className='mt-2 uppercase font-semibold'>Prompt</label>
+            <section className="flex items-center space-x-2">
+              <label className='uppercase font-semibold'>Prompt</label>
+              <MdOutlineZoomOutMap title='Zoom Out' onClick={() => { setShowModal(true); setTargetTitle('Prompt'); setTarget('prompt') }} />
+            </section>
             <textarea className='px-1 h-full resize-none outline-none border border-gray-300 w-[98%]'
               value={inputs.prompt} onChange={(e) => setInputs({ ...inputs, prompt: e.target.value })}
             />
@@ -148,7 +160,10 @@ function App() {
             </section>
           </div>
           <div className="w-2/3 flex flex-col">
-            <label className='uppercase font-semibold'>Mermaid Code</label>
+            <section className="flex items-center space-x-2">
+              <label className='uppercase font-semibold'>Mermaid Code</label>
+              <MdOutlineZoomOutMap title='Zoom Out' onClick={() => { setShowModal(true); setTargetTitle('Mermaid Code'); setTarget('code') }} />
+            </section>
             <textarea className='px-1 h-full bg-gray-100 resize-none outline-none border border-gray-300 rounded'
               value={inputs.code} onChange={(e) => setInputs({ ...inputs, code: e.target.value })}
             />
@@ -167,6 +182,45 @@ function App() {
       <footer className='h-[25px] bg-gray-900 text-white flex items-center px-2 text-sm space-x-2'>
         <span className='uppercase font-semibold'>Status:</span> {processing && <><label className='animate-pulse'>Processing...</label></>}
       </footer>
+      {/* Modal */}
+      <div className={`${showModal ? 'fixed' : 'hidden'} inset-0 z-50 flex items-center justify-center`} onKeyUp={(e) => { if (e.key === 'Escape') e.preventDefault(); setShowModal(false) }}>
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black opacity-80" onClick={() => setShowModal(false)}></div>
+
+        {/* Modal Content */}
+        <div className="relative bg-white rounded-lg shadow-xl p-6 w-full max-w-3/4 mx-4 flex flex-col h-3/4">
+          <h2 className="text-xl font-bold mb-4">Editor - {targetTitle}</h2>
+          {target == 'system' &&
+            <textarea className="w-full h-full border border-gray-300 rounded p-2 resize-none outline-none"
+              value={inputs.system} onChange={(e) => setInputs({ ...inputs, system: e.target.value })}
+            />
+          }
+          {target == 'prompt' &&
+            <textarea className="w-full h-full border border-gray-300 rounded p-2 resize-none outline-none"
+              value={inputs.prompt} onChange={(e) => setInputs({ ...inputs, prompt: e.target.value })}
+            />
+          }
+          {target == 'code' &&
+            <textarea className="w-full h-full border border-gray-300 rounded p-2 resize-none outline-none"
+              value={inputs.code} onChange={(e) => setInputs({ ...inputs, code: e.target.value })}
+            />
+          }
+          <div className="flex justify-end space-x-2 mt-4">
+            {/* <button
+              className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded"
+              onClick={() => setShowModal(false)}
+            >
+              Cancel
+            </button> */}
+            <button
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+              onClick={() => setShowModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
 
     </>
   )
