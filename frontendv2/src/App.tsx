@@ -126,7 +126,6 @@ function App() {
         <input type="text" className='bg-white text-black px-1 outline-none w-12'
           value={settings.retries} onChange={(e) => setSettings({ ...settings, retries: e.target.value })} />
         <button onClick={() => { setSettings(Settings) }} className='bg-red-700 hover:border text-white px-2'>Clear</button>
-        <button onClick={() => setShowModal(true)} className='bg-blue-700 hover:border text-white px-2 ml-auto'>Help</button>
       </section>
       <section id="mainarea" className="flex flex-col h-[calc(100vh-25px-38px-25px)]">
         <div className="flex h-[40%] bg-gray-50 p-2">
