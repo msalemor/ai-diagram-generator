@@ -13,6 +13,8 @@ Rules:
 - For the color styles, use classes and add them and the end of the rest of the elements.
 - No epilogue or prologue.
 - When appropriate, add labels between components.
+- Databases should be represented as cylinders.
+- Users should be represented as circles
 Output:
 - Output the Mermaid diagram code only without the markdown text block.`
 }
@@ -66,9 +68,18 @@ function App() {
   const [target, setTarget] = useState('')
   const [targetTitle, setTargetTitle] = useState('')
 
-  document.title = TITLE
+  //document.title = TITLE
+
+  const validateSettings = (): boolean => {
+    if (!settings.endpoint || !settings.apikey) {
+      alert('Please provide both the API endpoint and API key in the settings section.')
+      return false
+    }
+    return true
+  }
 
   const process = async () => {
+    if (!validateSettings()) return
     if (processing) return
     setProcessing(true)
     try {
@@ -89,7 +100,7 @@ function App() {
   }
 
   const update = async () => {
-    alert('Updating diagram from code...')
+    if (!validateSettings()) return
     if (processing) return
     setProcessing(true)
     try {
@@ -110,12 +121,12 @@ function App() {
 
   return (
     <>
-      <header className='flex items-center h-[38px] bg-gray-950 text-white px-2'>
+      <header className='flex items-center md:h-[38px] bg-gray-950 text-white px-2'>
         <h1 className='font-bold text-xl'>{TITLE}</h1>
       </header>
-      <section className="flex items-center bg-gray-800 text-white h-[25px] space-x-2 text-sm px-2">
+      <section className="flex flex-col md:flex-row md:items-center bg-gray-800 text-white md:h-[25px] space-x-2 text-sm px-2">
         <label htmlFor="" className='uppercase font-semibold'>Endpoint:</label>
-        <input type="password" className='bg-white text-black px-1 outline-none w-80'
+        <input type="password" className='bg-white text-black px-1 outline-none md:w-80'
           value={settings.endpoint} onChange={(e) => setSettings({ ...settings, endpoint: e.target.value })}
         />
         <label htmlFor="" className='uppercase font-semibold'>API Key:</label>
@@ -125,16 +136,16 @@ function App() {
         <label htmlFor="" className='uppercase font-semibold'>Retries:</label>
         <input type="text" className='bg-white text-black px-1 outline-none w-12'
           value={settings.retries} onChange={(e) => setSettings({ ...settings, retries: e.target.value })} />
-        <button onClick={() => { setSettings(Settings) }} className='bg-red-700 hover:border text-white px-2'>Clear</button>
+        <button onClick={() => { setSettings(Settings) }} className='bg-red-700 hover:border text-white px-2 w-12'>Clear</button>
       </section>
-      <section id="mainarea" className="flex flex-col h-[calc(100vh-25px-38px-25px)]">
-        <div className="flex h-[40%] bg-gray-50 p-2">
-          <div className="w-1/3 flex flex-col">
+      <section id="mainarea" className="flex flex-col md:h-[calc(100vh-25px-38px-25px)]">
+        <div className="flex-col flex md:flex-row h-[40%] bg-gray-50 p-2">
+          <div className="md:w-1/3 flex flex-col">
             <section className="flex items-center space-x-2">
               <label className='uppercase font-semibold'>System</label>
               <MdOutlineZoomOutMap title='Zoom Out' onClick={() => { setShowModal(true); setTargetTitle('System Prompt'); setTarget('system') }} />
             </section>
-            <textarea className='px-1 h-full resize-none outline-none border border-gray-300 w-[98%]'
+            <textarea className='px-1 md:h-full resize-none outline-none border border-gray-300 w-[98%]'
               value={inputs.system} onChange={(e) => setInputs({ ...inputs, system: e.target.value })}
             />
             <section className="flex items-center space-x-2">
@@ -144,21 +155,21 @@ function App() {
             <textarea className='px-1 h-full resize-none outline-none border border-gray-300 w-[98%]'
               value={inputs.prompt} onChange={(e) => setInputs({ ...inputs, prompt: e.target.value })}
             />
-            <section className="flex text-sm space-x-1">
+            <section className="flex-col flex md:flex-row text-sm space-x-1">
               <span className='font-semibold uppercase'>Demos:</span>
               <a href="#" className='text-blue-800'
-                onClick={() => setInputs({ ...inputs, prompt: Demos.simple })}>Simple</a> <span>|</span> <a href="#" className='text-blue-800'
-                  onClick={() => setInputs({ ...inputs, prompt: Demos.intermediate })}>Intermediate</a> <span>|</span> <a href="#" className='text-blue-800'
+                onClick={() => setInputs({ ...inputs, prompt: Demos.simple })}>Simple</a> <span className='hidden md:block'>|</span> <a href="#" className='text-blue-800'
+                  onClick={() => setInputs({ ...inputs, prompt: Demos.intermediate })}>Intermediate</a> <span className='hidden md:block'>|</span> <a href="#" className='text-blue-800'
                     onClick={() => setInputs({ ...inputs, prompt: Demos.complex })}>Complex</a>
             </section>
-            <section className="flex space-x-2 mt-2">
-              <button className='bg-blue-500 text-white px-2 ml-1 disabled:bg-blue-300 hover:bg-blue-400' disabled={processing} onClick={process}>Generate</button>
+            <section className="flex-col flex md:flex-row md:space-x-2 mt-2">
+              <button className='bg-blue-500 text-white px-2 md:ml-1 disabled:bg-blue-300 hover:bg-blue-400' disabled={processing} onClick={process}>Generate</button>
               <button className='bg-gray-300 text-black px-2 disabled:bg-blue-300 hover:bg-gray-200'
                 onClick={() => setInputs(InputAreas)} disabled={processing}
               >Reset</button>
             </section>
           </div>
-          <div className="w-2/3 flex flex-col">
+          <div className="md:w-2/3 flex flex-col">
             <section className="flex items-center space-x-2">
               <label className='uppercase font-semibold'>Mermaid Code</label>
               <MdOutlineZoomOutMap title='Zoom Out' onClick={() => { setShowModal(true); setTargetTitle('Mermaid Code'); setTarget('code') }} />
@@ -178,7 +189,7 @@ function App() {
           <div id="chart" className='h-full p-2 overflow-auto' />
         </section>
       </section>
-      <footer className='h-[25px] bg-gray-900 text-white flex items-center px-2 text-sm space-x-2'>
+      <footer className='md:h-[25px] bg-gray-900 text-white flex items-center px-2 text-sm space-x-2'>
         <span className='uppercase font-semibold'>Status:</span> {processing && <><label className='animate-pulse'>Processing...</label></>}
       </footer>
       {/* Modal */}
